@@ -1,8 +1,6 @@
 function App() {
   return (
-    <>
-        <p>Init</p>
-    </>
+      <p className="bg-green-300">Init</p>
   )
 }
 
