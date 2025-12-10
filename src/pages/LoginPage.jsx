@@ -6,10 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // <--- Import
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
-    const { register, handleSubmit, formState: { isSubmitting } } = useForm();
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -57,12 +57,22 @@ const LoginPage = () => {
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         <div className="space-y-2">
                             <Label>Email</Label>
-                            <Input type="email" {...register("email", { required: true })} />
+                            <Input
+                                type="email"
+                                {...register("email", {
+                                    required: "Email jest wymagany",
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                        message: "Niepoprawny format email (np. jan@domena.pl)"
+                                    }
+                                })}
+                            />
+                            {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
                         </div>
                         <div className="space-y-2">
                             <div className="flex justify-between">
                                 <Label>Hasło</Label>
-                                <Link to="/forgot-password" class="text-xs text-primary hover:underline">Zapomniałeś hasła?</Link>
+                                <Link to="/forgot-password" className="text-xs text-primary hover:underline">Zapomniałeś hasła?</Link>
                             </div>
                             <Input type="password" {...register("password", { required: true })} />
                         </div>

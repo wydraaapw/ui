@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // <--- Import
+import { toast } from "react-toastify";
 
 const RegisterPage = () => {
     const { register, handleSubmit, formState: { errors, isSubmitting }, watch } = useForm();
@@ -61,7 +61,10 @@ const RegisterPage = () => {
                             <Label>Email</Label>
                             <Input type="email" {...register("email", {
                                 required: "Wymagane",
-                                pattern: { value: /^\S+@\S+$/i, message: "Błędny format" }
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                    message: "Niepoprawny format email (np. jan@domena.pl)"
+                                    }
                             })} />
                             {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
                         </div>

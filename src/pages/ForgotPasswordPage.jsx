@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "react-toastify";
 
 const ForgotPasswordPage = () => {
-    const { register, handleSubmit, formState: { isSubmitting } } = useForm();
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
 
     const onSubmit = async (data) => {
         try {
@@ -41,11 +41,12 @@ const ForgotPasswordPage = () => {
                                 {...register("email", {
                                     required: "Podanie adresu email jest wymagane",
                                     pattern: {
-                                        value: /^\S+@\S+$/i,
-                                        message: "Niepoprawny format email"
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                        message: "Niepoprawny format email (np. jan@domena.pl)"
                                     }
                                 })}
                             />
+                            {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
                         </div>
 
                         <Button type="submit" className="w-full" disabled={isSubmitting}>
