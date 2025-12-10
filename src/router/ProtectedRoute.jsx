@@ -15,9 +15,8 @@ const isTokenExpired = (token) => {
     }
 };
 
-const ProtectedRoute = ({ children }) => {
-    const { token, logout } = useAuth();
-
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
+    const { token, user, logout } = useAuth();
     const tokenExpired = isTokenExpired(token);
 
     useEffect(() => {
@@ -30,11 +29,29 @@ const ProtectedRoute = ({ children }) => {
         return <Navigate to="/login" replace />;
     }
 
+    if (allowedRoles.length > 0) {
+        let userRole = user?.role;
+
+        if (!userRole && token) {
+            try {
+                const decoded = jwtDecode(token);
+                userRole = decoded.role; // W AuthService.java w claims jest "role"
+            } catch{
+                return <Navigate to="/login" replace />;
+            }
+        }
+
+        if (!allowedRoles.includes(userRole)) {
+            return <Navigate to="/" replace />;
+        }
+    }
+
     return children;
 };
 
 ProtectedRoute.propTypes = {
     children: PropTypes.node.isRequired,
+    allowedRoles: PropTypes.arrayOf(PropTypes.string), // Nowy prop
 };
 
 export default ProtectedRoute;

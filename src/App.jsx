@@ -1,13 +1,18 @@
-import { Button } from "@/components/ui/button"
+import AppRouter from "@/router/AppRouter";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  return (
-      <div className="flex min-h-svh flex-col items-center justify-center">
-          <Button>Click me</Button>
-          <Button>Click me</Button>
-      </div>
-
-  )
+    return (
+        <>
+            <AppRouter />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+            />
+        </>
+    );
 }
 
-export default App
+export default App;
