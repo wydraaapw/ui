@@ -16,10 +16,18 @@ const LoginPage = () => {
     const onSubmit = async (data) => {
         try {
             const res = await axiosClient.post("/api/auth/login", data);
+            const user = res.data.user;
 
-            login(res.data.token, res.data.user);
-            toast.success(`Witaj ponownie, ${res.data.user.firstName}!`);
-            navigate("/dashboard");
+            login(res.data.token, user);
+            toast.success(`Witaj ponownie, ${user.firstName}!`);
+
+            if (user.role === 'ROLE_ADMIN') {
+                navigate("/admin");
+            } else if (user.role === 'ROLE_WAITER') {
+                navigate("/waiter-panel");
+            } else {
+                navigate("/client");
+            }
 
         } catch (error) {
             console.error("Login error:", error);

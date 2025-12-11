@@ -4,10 +4,11 @@ import HomePage from "@/pages/HomePage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import ActivationPage from "@/pages/ActivationPage";
-import DashboardPage from "@/pages/DashboardPage";
+import ClientPage from "@/pages/ClientPage.jsx";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import ProtectedRoute from "@/router/ProtectedRoute";
+import AdminPanel from "@/pages/AdminPanel.jsx";
 
 const router = createBrowserRouter([
     {
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
                 path: "dashboard",
                 element: (
                     <ProtectedRoute allowedRoles={['ROLE_CLIENT']}>
-                        <DashboardPage />
+                        <ClientPage />
                     </ProtectedRoute>
                 )
             },
@@ -39,6 +40,14 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 )
             },
+            {
+                path: "admin",
+                element: (
+                    <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+                        <AdminPanel />
+                    </ProtectedRoute>
+                )
+            }
         ]
     },
     {
