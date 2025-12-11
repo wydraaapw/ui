@@ -26,7 +26,7 @@ const LoginPage = () => {
             } else if (user.role === 'ROLE_WAITER') {
                 navigate("/waiter-panel");
             } else {
-                navigate("/dashboard");
+                navigate("/client");
             }
 
         } catch (error) {
