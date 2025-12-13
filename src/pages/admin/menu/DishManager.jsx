@@ -1,0 +1,191 @@
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Trash2, Plus, Loader2, Image as ImageIcon } from "lucide-react";
+import { toast } from "react-toastify";
+import { menuService } from "@/api/menuService";
+
+const DishManager = () => {
+    const [dishes, setDishes] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [ingredients, setIngredients] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm();
+
+    const loadData = async () => {
+        try {
+            const [dishesData, catData, ingData] = await Promise.all([
+                menuService.getDishes(),
+                menuService.getCategories(),
+                menuService.getIngredients()
+            ]);
+            setDishes(dishesData);
+            setCategories(catData);
+            setIngredients(ingData);
+        } catch {
+            toast.error("Błąd pobierania danych.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const onSubmit = async (data) => {
+        try {
+            const payload = {
+                ...data,
+                price: Number.parseFloat(data.price),
+                categoryId: Number.parseInt(data.categoryId),
+                ingredientIds: data.ingredientIds ? data.ingredientIds.map(id => parseInt(id)) : []
+            };
+
+            await menuService.createDish(payload);
+            toast.success("Danie dodane pomyślnie!");
+            reset();
+            await loadData();
+        } catch (error) {
+            const msg = error.response?.data?.detail || "Błąd podczas dodawania dania.";
+            toast.error(msg);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm("Czy na pewno chcesz usunąć to danie?")) return;
+        try {
+            await menuService.deleteDish(id);
+            toast.success("Usunięto pomyślnie.");
+            await loadData();
+        } catch{
+            toast.error("Nie można usunąć dania.");
+        }
+    };
+
+    if (loading) return <div className="text-center py-10"><Loader2 className="animate-spin h-8 w-8 mx-auto text-primary"/></div>;
+
+    return (
+        <div className="space-y-8">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Dodaj Nowe Danie 🍽️</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>Nazwa dania</Label>
+                                <Input {...register("name", { required: "Wymagane" })} placeholder="np. Pizza Pepperoni" />
+                                {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Cena (PLN)</Label>
+                                <Input
+                                    type="number"
+                                    step="0.01"
+                                    {...register("price", { required: "Wymagane", min: 0 })}
+                                    placeholder="np. 34.90"
+                                />
+                                {errors.price && <p className="text-red-500 text-xs">{errors.price.message}</p>}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>Kategoria</Label>
+                                <select
+                                    {...register("categoryId", { required: "Wybierz kategorię" })}
+                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                >
+                                    <option value="">-- Wybierz --</option>
+                                    {categories.map(cat => (
+                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                    ))}
+                                </select>
+                                {errors.categoryId && <p className="text-red-500 text-xs">{errors.categoryId.message}</p>}
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Link do zdjęcia (URL)</Label>
+                                <Input {...register("imageUrl", { required: "Wymagane" })} placeholder="https://..." />
+                                {errors.imageUrl && <p className="text-red-500 text-xs">{errors.imageUrl.message}</p>}
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label>Opis</Label>
+                            <Input {...register("description")} placeholder="Krótki opis dania..." />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label>Składniki (zaznacz te, które wchodzą w skład dania)</Label>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 border p-4 rounded-md bg-slate-50 max-h-40 overflow-y-auto">
+                                {ingredients.length === 0 && <span className="text-gray-500 text-sm">Brak składników w bazie. Dodaj je najpierw w zakładce Składniki.</span>}
+                                {ingredients.map(ing => (
+                                    <label key={ing.id} className="flex items-center space-x-2 cursor-pointer hover:bg-slate-100 p-1 rounded">
+                                        <input
+                                            type="checkbox"
+                                            value={ing.id}
+                                            {...register("ingredientIds")}
+                                            className="accent-primary h-4 w-4 rounded"
+                                        />
+                                        <span className="text-sm text-gray-700">{ing.name}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        <Button type="submit" className="w-full" disabled={isSubmitting}>
+                            {isSubmitting ? "Zapisywanie..." : <><Plus className="mr-2 h-4 w-4"/> Dodaj Danie</>}
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {dishes.length === 0 && <p className="text-gray-500 col-span-full text-center">Brak dań w menu.</p>}
+
+                {dishes.map(dish => (
+                    <Card key={dish.id} className="flex flex-row overflow-hidden h-32 hover:shadow-md transition-shadow">
+                        <div className="w-32 bg-gray-200 relative shrink-0">
+                            {dish.imageUrl ? (
+                                <img src={dish.imageUrl} alt={dish.name} className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="flex items-center justify-center h-full text-gray-400"><ImageIcon/></div>
+                            )}
+                        </div>
+
+                        <div className="flex-1 p-4 flex flex-col justify-between overflow-hidden">
+                            <div>
+                                <div className="flex justify-between items-start">
+                                    <h3 className="font-bold text-lg leading-tight truncate mr-2">{dish.name}</h3>
+                                    <span className="text-primary font-bold whitespace-nowrap">{dish.price} zł</span>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1 font-semibold uppercase">{dish.categoryName}</p>
+                                <p className="text-xs text-gray-600 mt-1 line-clamp-1">{dish.description}</p>
+                            </div>
+
+                            <div className="flex justify-end mt-1">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-red-500 hover:text-red-700 hover:bg-red-50 h-7 px-2"
+                                    onClick={() => handleDelete(dish.id)}
+                                >
+                                    <Trash2 className="h-4 w-4 mr-1" /> Usuń
+                                </Button>
+                            </div>
+                        </div>
+                    </Card>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export default DishManager;

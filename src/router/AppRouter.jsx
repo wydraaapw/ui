@@ -1,14 +1,15 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
-import HomePage from "@/pages/HomePage";
-import LoginPage from "@/pages/LoginPage";
-import RegisterPage from "@/pages/RegisterPage";
-import ActivationPage from "@/pages/ActivationPage";
+import HomePage from "@/pages/auth/HomePage.jsx";
+import LoginPage from "@/pages/auth/LoginPage.jsx";
+import RegisterPage from "@/pages/auth/RegisterPage.jsx";
+import ActivationPage from "@/pages/auth/ActivationPage.jsx";
 import ClientPage from "@/pages/ClientPage.jsx";
-import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
-import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage.jsx";
+import ResetPasswordPage from "@/pages/auth/ResetPasswordPage.jsx";
 import ProtectedRoute from "@/router/ProtectedRoute";
-import AdminPanel from "@/pages/AdminPanel.jsx";
+import AdminPanel from "@/pages/admin/AdminPanel.jsx";
+import AdminMenuPage from "@/pages/admin/menu/AdminMenuPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -45,6 +46,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
                         <AdminPanel />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "admin/menu",
+                element: (
+                    <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+                        <AdminMenuPage />
                     </ProtectedRoute>
                 )
             }

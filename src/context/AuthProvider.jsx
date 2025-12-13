@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
                     setLoading(false);
                 } else {
                     axiosClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    fetchUser();
+                    void fetchUser();
                 }
             } catch {
                 logout();

@@ -40,13 +40,22 @@ const Navbar = () => {
         navigate("/");
     };
 
+    const rolePaths = {
+        ROLE_ADMIN: "/admin",
+        ROLE_WAITER: "/waiter",
+        ROLE_CLIENT: "/client",
+    };
+
+    const logoPath = rolePaths[user?.role] ?? "/";
+
+
     const isClient = user?.role === 'ROLE_CLIENT';
 
     return (
         <nav className="border-b bg-white shadow-sm sticky top-0 z-50">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
 
-                <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary">
+                <Link to={logoPath} className="flex items-center gap-2 font-bold text-xl text-primary">
                     <UtensilsCrossed className="h-6 w-6" />
                     <span>DobreSmaki</span>
                 </Link>

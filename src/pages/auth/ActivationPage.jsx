@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button.jsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
 import { toast } from "react-toastify";
 
 const ActivationPage = () => {

@@ -35,7 +35,7 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
         if (!userRole && token) {
             try {
                 const decoded = jwtDecode(token);
-                userRole = decoded.role; // W AuthService.java w claims jest "role"
+                userRole = decoded.role;
             } catch{
                 return <Navigate to="/login" replace />;
             }
@@ -51,7 +51,7 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 
 ProtectedRoute.propTypes = {
     children: PropTypes.node.isRequired,
-    allowedRoles: PropTypes.arrayOf(PropTypes.string), // Nowy prop
+    allowedRoles: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default ProtectedRoute;

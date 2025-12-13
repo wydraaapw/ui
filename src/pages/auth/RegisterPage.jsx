@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
-import axiosClient from "@/api/axiosClient";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import axiosClient from "@/api/axiosClient.js";
+import { Button } from "@/components/ui/button.jsx";
+import { Input } from "@/components/ui/input.jsx";
+import { Label } from "@/components/ui/label.jsx";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
