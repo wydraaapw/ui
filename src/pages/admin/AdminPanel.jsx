@@ -46,16 +46,18 @@ export default function AdminPanel() {
                     </CardContent>
                 </Card>
 
-                <Card className="hover:shadow-md transition-shadow opacity-60">
+                <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-lg font-medium">Personel</CardTitle>
                         <Users className="h-5 w-5 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-muted-foreground mb-4">
-                            Zarządzaj kelnerami i ich grafikami (Wkrótce).
+                            Zarządzaj kelnerami i ich kontami.
                         </p>
-                        <Button variant="outline" className="w-full" disabled>Wkrótce</Button>
+                        <Button asChild className="w-full">
+                            <Link to="/admin/staff">Zarządzaj Personelem</Link>
+                        </Button>
                     </CardContent>
                 </Card>
 

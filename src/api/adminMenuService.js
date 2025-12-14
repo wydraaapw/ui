@@ -1,6 +1,6 @@
 import axiosClient from "@/api/axiosClient";
 
-export const menuService = {
+export const adminMenuService = {
     getCategories: async () => {
         const res = await axiosClient.get("/api/admin/categories");
         return res.data;

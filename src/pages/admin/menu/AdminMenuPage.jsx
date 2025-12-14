@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { menuService } from "@/api/menuService";
+import { adminMenuService } from "@/api/adminMenuService.js";
 import ResourceManager from "./ResourceManager";
 import DishManager from "./DishManager";
 import { Button } from "@/components/ui/button";
@@ -37,9 +37,9 @@ const AdminMenuPage = () => {
                     <ResourceManager
                         title="Kategorie Dań"
                         placeholder="Np. Zupy, Burgery, Napoje"
-                        fetchFn={menuService.getCategories}
-                        createFn={menuService.createCategory}
-                        deleteFn={menuService.deleteCategory}
+                        fetchFn={adminMenuService.getCategories}
+                        createFn={adminMenuService.createCategory}
+                        deleteFn={adminMenuService.deleteCategory}
                     />
                 )}
 
@@ -47,9 +47,9 @@ const AdminMenuPage = () => {
                     <ResourceManager
                         title="Baza Składników"
                         placeholder="Np. Wołowina, Pomidor, Gluten"
-                        fetchFn={menuService.getIngredients}
-                        createFn={menuService.createIngredient}
-                        deleteFn={menuService.deleteIngredient}
+                        fetchFn={adminMenuService.getIngredients}
+                        createFn={adminMenuService.createIngredient}
+                        deleteFn={adminMenuService.deleteIngredient}
                     />
                 )}
 

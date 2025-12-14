@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trash2, Plus, Loader2, Image as ImageIcon } from "lucide-react";
 import { toast } from "react-toastify";
-import { menuService } from "@/api/menuService";
+import { adminMenuService } from "@/api/adminMenuService.js";
 
 const DishManager = () => {
     const [dishes, setDishes] = useState([]);
@@ -19,9 +19,9 @@ const DishManager = () => {
     const loadData = async () => {
         try {
             const [dishesData, catData, ingData] = await Promise.all([
-                menuService.getDishes(),
-                menuService.getCategories(),
-                menuService.getIngredients()
+                adminMenuService.getDishes(),
+                adminMenuService.getCategories(),
+                adminMenuService.getIngredients()
             ]);
             setDishes(dishesData);
             setCategories(catData);
@@ -34,7 +34,7 @@ const DishManager = () => {
     };
 
     useEffect(() => {
-        loadData();
+       void loadData();
     }, []);
 
     const onSubmit = async (data) => {
@@ -43,41 +43,42 @@ const DishManager = () => {
                 ...data,
                 price: Number.parseFloat(data.price),
                 categoryId: Number.parseInt(data.categoryId),
-                ingredientIds: data.ingredientIds ? data.ingredientIds.map(id => parseInt(id)) : []
+                ingredientIds: data.ingredientIds ? data.ingredientIds.map(id => Number.parseInt(id)) : []
             };
 
-            await menuService.createDish(payload);
+            await adminMenuService.createDish(payload);
             toast.success("Danie dodane pomyślnie!");
             reset();
-            await loadData();
+            void loadData();
         } catch (error) {
             const msg = error.response?.data?.detail || "Błąd podczas dodawania dania.";
             toast.error(msg);
         }
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (id, e) => {
+        e.stopPropagation();
         if (!window.confirm("Czy na pewno chcesz usunąć to danie?")) return;
+
         try {
-            await menuService.deleteDish(id);
+            await adminMenuService.deleteDish(id);
             toast.success("Usunięto pomyślnie.");
-            await loadData();
+            void loadData();
         } catch{
-            toast.error("Nie można usunąć dania.");
+            toast.error("Nie można usunąć dania (może być częścią zamówienia).");
         }
     };
 
     if (loading) return <div className="text-center py-10"><Loader2 className="animate-spin h-8 w-8 mx-auto text-primary"/></div>;
 
     return (
-        <div className="space-y-8">
-            <Card>
+        <div className="space-y-12">
+            <Card className="border-l-4 border-l-primary shadow-sm">
                 <CardHeader>
                     <CardTitle>Dodaj Nowe Danie 🍽️</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label>Nazwa dania</Label>
@@ -123,7 +124,7 @@ const DishManager = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <Label>Składniki (zaznacz te, które wchodzą w skład dania)</Label>
+                            <Label>Składniki</Label>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 border p-4 rounded-md bg-slate-50 max-h-40 overflow-y-auto">
                                 {ingredients.length === 0 && <span className="text-gray-500 text-sm">Brak składników w bazie. Dodaj je najpierw w zakładce Składniki.</span>}
                                 {ingredients.map(ing => (
@@ -147,42 +148,66 @@ const DishManager = () => {
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {dishes.length === 0 && <p className="text-gray-500 col-span-full text-center">Brak dań w menu.</p>}
+            <div className="space-y-8">
+                <h2 className="text-2xl font-bold border-b pb-2">Aktualne Menu</h2>
 
-                {dishes.map(dish => (
-                    <Card key={dish.id} className="flex flex-row overflow-hidden h-32 hover:shadow-md transition-shadow">
-                        <div className="w-32 bg-gray-200 relative shrink-0">
-                            {dish.imageUrl ? (
-                                <img src={dish.imageUrl} alt={dish.name} className="w-full h-full object-cover" />
-                            ) : (
-                                <div className="flex items-center justify-center h-full text-gray-400"><ImageIcon/></div>
-                            )}
-                        </div>
+                {dishes.length === 0 && <p className="text-gray-500 text-center">Menu jest puste.</p>}
 
-                        <div className="flex-1 p-4 flex flex-col justify-between overflow-hidden">
-                            <div>
-                                <div className="flex justify-between items-start">
-                                    <h3 className="font-bold text-lg leading-tight truncate mr-2">{dish.name}</h3>
-                                    <span className="text-primary font-bold whitespace-nowrap">{dish.price} zł</span>
-                                </div>
-                                <p className="text-xs text-gray-500 mt-1 font-semibold uppercase">{dish.categoryName}</p>
-                                <p className="text-xs text-gray-600 mt-1 line-clamp-1">{dish.description}</p>
+                {categories.map((category) => {
+                    const categoryDishes = dishes.filter(d => d.categoryName === category.name);
+                    if (categoryDishes.length === 0) return null;
+
+                    return (
+                        <div key={category.id} className="space-y-4">
+                            <h3 className="text-xl font-semibold text-slate-700 flex items-center gap-2">
+                                <span className="bg-primary/10 text-primary px-3 py-1 rounded text-sm font-bold uppercase tracking-wider">
+                                    {category.name}
+                                </span>
+                            </h3>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {categoryDishes.map(dish => (
+                                    <Card key={dish.id} className="flex flex-row overflow-hidden min-h-[8rem] hover:shadow-md transition-shadow group relative">
+                                        <div className="w-32 bg-gray-200 relative shrink-0">
+                                            {dish.imageUrl ? (
+                                                <img src={dish.imageUrl} alt={dish.name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="flex items-center justify-center h-full text-gray-400"><ImageIcon/></div>
+                                            )}
+                                        </div>
+
+                                        <div className="flex-1 p-3 flex flex-col justify-between">
+                                            <div>
+                                                <div className="flex justify-between items-start">
+                                                    <h3 className="font-bold text-lg leading-tight mr-2">{dish.name}</h3>
+                                                    <span className="text-primary font-bold whitespace-nowrap">{dish.price} zł</span>
+                                                </div>
+                                                <p className="text-xs text-gray-600 mt-1 line-clamp-3">{dish.description}</p>
+
+                                                {dish.ingredients && dish.ingredients.length > 0 && (
+                                                    <p className="text-[10px] text-gray-400 mt-1 truncate">
+                                                        {dish.ingredients.join(', ')}
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <div className="flex justify-end mt-2">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-gray-400 hover:text-red-600 hover:bg-red-50 h-8 px-2"
+                                                    onClick={(e) => handleDelete(dish.id, e)}
+                                                >
+                                                    <Trash2 className="h-4 w-4 mr-1" /> Usuń
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                ))}
                             </div>
-
-                            <div className="flex justify-end mt-1">
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="text-red-500 hover:text-red-700 hover:bg-red-50 h-7 px-2"
-                                    onClick={() => handleDelete(dish.id)}
-                                >
-                                    <Trash2 className="h-4 w-4 mr-1" /> Usuń
-                                </Button>
-                            </div>
                         </div>
-                    </Card>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );
