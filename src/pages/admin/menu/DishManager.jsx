@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trash2, Plus, Loader2, Image as ImageIcon } from "lucide-react";
 import { toast } from "react-toastify";
-import { menuService } from "@/api/menuService";
+import { adminMenuService } from "@/api/adminMenuService.js";
 
 const DishManager = () => {
     const [dishes, setDishes] = useState([]);
@@ -19,9 +19,9 @@ const DishManager = () => {
     const loadData = async () => {
         try {
             const [dishesData, catData, ingData] = await Promise.all([
-                menuService.getDishes(),
-                menuService.getCategories(),
-                menuService.getIngredients()
+                adminMenuService.getDishes(),
+                adminMenuService.getCategories(),
+                adminMenuService.getIngredients()
             ]);
             setDishes(dishesData);
             setCategories(catData);
@@ -34,7 +34,7 @@ const DishManager = () => {
     };
 
     useEffect(() => {
-        loadData();
+        void loadData();
     }, []);
 
     const onSubmit = async (data) => {
@@ -43,10 +43,10 @@ const DishManager = () => {
                 ...data,
                 price: Number.parseFloat(data.price),
                 categoryId: Number.parseInt(data.categoryId),
-                ingredientIds: data.ingredientIds ? data.ingredientIds.map(id => parseInt(id)) : []
+                ingredientIds: data.ingredientIds ? data.ingredientIds.map(id => Number.parseInt(id)) : []
             };
 
-            await menuService.createDish(payload);
+            await adminMenuService.createDish(payload);
             toast.success("Danie dodane pomyślnie!");
             reset();
             await loadData();
@@ -57,9 +57,9 @@ const DishManager = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Czy na pewno chcesz usunąć to danie?")) return;
+        if (!globalThis.confirm("Czy na pewno chcesz usunąć to danie?")) return;
         try {
-            await menuService.deleteDish(id);
+            await adminMenuService.deleteDish(id);
             toast.success("Usunięto pomyślnie.");
             await loadData();
         } catch{
