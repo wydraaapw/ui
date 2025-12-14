@@ -1,9 +1,9 @@
 import { useState } from "react";
 import WaiterManager from "./WaiterManager";
-import ShiftManager from "./ShiftManager"; // <--- IMPORT
+import ShiftManager from "./ShiftManager";
 import { Button } from "@/components/ui/button";
 
-const AdminStaffPage = () => {
+const AdminWaitersPage = () => {
     const [activeTab, setActiveTab] = useState("waiters");
 
     return (
@@ -34,4 +34,4 @@ const AdminStaffPage = () => {
     );
 };
 
-export default AdminStaffPage;
+export default AdminWaitersPage;

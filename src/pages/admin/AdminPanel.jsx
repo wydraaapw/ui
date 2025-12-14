@@ -33,16 +33,18 @@ export default function AdminPanel() {
                     </CardContent>
                 </Card>
 
-                <Card className="hover:shadow-md transition-shadow opacity-60">
+                <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-green-500">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-lg font-medium">Sala i Stoliki</CardTitle>
                         <LayoutGrid className="h-5 w-5 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-muted-foreground mb-4">
-                            Konfiguruj układ sali i liczbę miejsc (Wkrótce).
+                            Konfiguruj układ sali, liczbę miejsc oraz ustawienie stolików.
                         </p>
-                        <Button variant="outline" className="w-full" disabled>Wkrótce</Button>
+                        <Button asChild className="w-full">
+                            <Link to="/admin/tables">Zarządzaj Salą</Link>
+                        </Button>
                     </CardContent>
                 </Card>
 

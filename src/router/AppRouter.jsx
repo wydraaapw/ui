@@ -10,7 +10,8 @@ import ResetPasswordPage from "@/pages/auth/ResetPasswordPage.jsx";
 import ProtectedRoute from "@/router/ProtectedRoute";
 import AdminPanel from "@/pages/admin/AdminPanel.jsx";
 import AdminMenuPage from "@/pages/admin/menu/AdminMenuPage.jsx";
-import AdminStaffPage from "@/pages/admin/waiters/AdminStaffPage.jsx";
+import AdminWaitersPage from "@/pages/admin/waiters/AdminWaitersPage.jsx";
+import TableManager from "@/pages/admin/tables/TableManager.jsx";
 
 const router = createBrowserRouter([
     {
@@ -62,7 +63,15 @@ const router = createBrowserRouter([
                 path: "admin/staff",
                 element: (
                     <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
-                        <AdminStaffPage />
+                        <AdminWaitersPage />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "admin/tables",
+                element: (
+                    <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+                        <TableManager />
                     </ProtectedRoute>
                 )
             }
