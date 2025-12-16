@@ -1,15 +1,24 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { adminMenuService } from "@/api/adminMenuService.js";
 import ResourceManager from "./ResourceManager";
 import DishManager from "./DishManager";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
 
 const AdminMenuPage = () => {
     const [activeTab, setActiveTab] = useState("categories");
 
     return (
         <div className="container mx-auto p-6 max-w-4xl">
-            <h1 className="text-3xl font-bold mb-6">Zarządzanie Menu 🍔</h1>
+            <div className="flex items-center gap-4 mb-6">
+                <Button variant="outline" size="icon" asChild>
+                    <Link to="/admin">
+                        <ChevronLeft className="h-5 w-5" />
+                    </Link>
+                </Button>
+                <h1 className="text-3xl font-bold">Zarządzanie Menu 🍔</h1>
+            </div>
 
             <div className="flex gap-2 mb-8 border-b pb-4 overflow-x-auto">
                 <Button

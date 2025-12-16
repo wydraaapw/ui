@@ -41,7 +41,7 @@ const WaiterManager = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Czy na pewno chcesz usunąć to konto? To operacja nieodwracalna.")) return;
+        if (!globalThis.confirm("Czy na pewno chcesz usunąć to konto? To operacja nieodwracalna.")) return;
         try {
             await adminWaiterService.deleteWaiter(id);
             toast.success("Pracownik usunięty.");

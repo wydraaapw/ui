@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +13,8 @@ import {
     Martini,
     Accessibility,
     Utensils,
-    Plus
+    Plus,
+    ChevronLeft
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { adminTableService } from "@/api/adminTableService.js";
@@ -76,7 +78,7 @@ const TableManager = () => {
 
             toast.success("Element dodany!");
             setIsDialogOpen(false);
-            void loadTables();
+            await loadTables();
         } catch (error) {
             toast.error(error.response?.data?.detail || "Błąd dodawania elementu.");
         }
@@ -89,9 +91,9 @@ const TableManager = () => {
         try {
             await adminTableService.deleteTable(id);
             toast.success("Usunięto.");
-            void loadTables();
-        } catch {
-            toast.error("Błąd usuwania.");
+            await loadTables();
+        } catch (error){
+            toast.error(error.response?.data?.detail);
         }
     };
 
@@ -198,7 +200,15 @@ const TableManager = () => {
 
     return (
         <div className="container mx-auto p-6 max-w-5xl">
-            <h1 className="text-3xl font-bold mb-6">Układ Sali 🗺️</h1>
+            <div className="flex items-center gap-4 mb-6">
+                <Button variant="outline" size="icon" asChild>
+                    <Link to="/admin">
+                        <ChevronLeft className="h-5 w-5" />
+                    </Link>
+                </Button>
+                <h1 className="text-3xl font-bold">Układ Sali 🗺️</h1>
+            </div>
+
             <p className="text-gray-500 mb-8">
                 Kliknij w puste pole, aby dodać element. Puste pola będą niewidoczne dla klientów, tworząc kształt sali.
             </p>

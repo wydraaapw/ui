@@ -4,14 +4,15 @@ import HomePage from "@/pages/auth/HomePage.jsx";
 import LoginPage from "@/pages/auth/LoginPage.jsx";
 import RegisterPage from "@/pages/auth/RegisterPage.jsx";
 import ActivationPage from "@/pages/auth/ActivationPage.jsx";
-import ClientPage from "@/pages/ClientPage.jsx";
+import ClientPage from "@/pages/client/ClientPage.jsx";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "@/pages/auth/ResetPasswordPage.jsx";
 import ProtectedRoute from "@/router/ProtectedRoute";
 import AdminPanel from "@/pages/admin/AdminPanel.jsx";
 import AdminMenuPage from "@/pages/admin/menu/AdminMenuPage.jsx";
-import AdminWaitersPage from "@/pages/admin/waiters/AdminWaitersPage.jsx";
+import AdminWaitersPage from "@/pages/admin/waiter/AdminWaitersPage.jsx";
 import TableManager from "@/pages/admin/tables/TableManager.jsx";
+import ReservationPage from "@/pages/client/ReservationPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -24,7 +25,14 @@ const router = createBrowserRouter([
             { path: "activate", element: <ActivationPage /> },
             { path: "forgot-password", element: <ForgotPasswordPage /> },
             { path: "reset-password", element: <ResetPasswordPage /> },
-            { path: "menu", element: <div className="p-10 text-center">Menu wkrótce...</div> },
+            {
+                path: "reservations",
+                element: (
+                    <ProtectedRoute allowedRoles={['ROLE_CLIENT']}>
+                        <ReservationPage />
+                    </ProtectedRoute>
+                )
+            },
             { path: "opinions", element: <div className="p-10 text-center">Opinie wkrótce...</div> },
 
             {
@@ -74,7 +82,8 @@ const router = createBrowserRouter([
                         <TableManager />
                     </ProtectedRoute>
                 )
-            }
+            },
+
         ]
     },
     {
