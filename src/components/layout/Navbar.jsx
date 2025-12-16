@@ -24,7 +24,8 @@ import {
     CalendarDays,
     Bell,
     LogOut,
-    ChevronDown
+    ChevronDown,
+    LayoutDashboard
 } from "lucide-react";
 
 const Navbar = () => {
@@ -48,8 +49,8 @@ const Navbar = () => {
 
     const logoPath = rolePaths[user?.role] ?? "/";
 
-
     const isClient = user?.role === 'ROLE_CLIENT';
+    const isAdmin = user?.role === 'ROLE_ADMIN';
 
     return (
         <nav className="border-b bg-white shadow-sm sticky top-0 z-50">
@@ -61,12 +62,23 @@ const Navbar = () => {
                 </Link>
 
                 <div className="hidden md:flex gap-6 text-sm font-medium text-gray-600 items-center">
-                    <Link to="/menu" className="hover:text-primary transition">Menu</Link>
-                    <Link to="/opinions" className="hover:text-primary transition">Opinie</Link>
+                    {!isAdmin && (
+                        <>
+                            <Link to="/menu" className="hover:text-primary transition">Menu</Link>
+                            <Link to="/opinions" className="hover:text-primary transition">Opinie</Link>
+                        </>
+                    )}
 
                     {isClient && (
                         <Link to="/reservations" className="hover:text-primary transition font-semibold text-primary">
                             Zarezerwuj stolik
+                        </Link>
+                    )}
+
+                    {isAdmin && (
+                        <Link to="/admin" className="hover:text-primary transition font-semibold text-primary flex items-center gap-1">
+                            <LayoutDashboard className="h-4 w-4" />
+                            Panel Administratora
                         </Link>
                     )}
                 </div>
@@ -82,7 +94,9 @@ const Navbar = () => {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuLabel>Moje Konto ({user.role === 'ROLE_CLIENT' ? 'Klient' : 'Personel'})</DropdownMenuLabel>
+                                <DropdownMenuLabel>
+                                    Moje Konto ({user.role === 'ROLE_CLIENT' ? 'Klient' : user.role === 'ROLE_ADMIN' ? 'Admin' : 'Personel'})
+                                </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
 
                                 {isClient && (
@@ -101,6 +115,15 @@ const Navbar = () => {
                                             </Link>
                                         </DropdownMenuItem>
                                     </>
+                                )}
+
+                                {isAdmin && (
+                                    <DropdownMenuItem asChild>
+                                        <Link to="/admin" className="cursor-pointer">
+                                            <LayoutDashboard className="mr-2 h-4 w-4" />
+                                            <span>Panel Administratora</span>
+                                        </Link>
+                                    </DropdownMenuItem>
                                 )}
 
                                 <DropdownMenuItem asChild>
@@ -144,16 +167,27 @@ const Navbar = () => {
                             </SheetHeader>
 
                             <div className="flex flex-col gap-4 mt-8">
-                                <Link to="/menu" onClick={closeMenu} className="text-lg font-medium hover:text-primary">
-                                    Menu
-                                </Link>
-                                <Link to="/opinions" onClick={closeMenu} className="text-lg font-medium hover:text-primary">
-                                    Opinie
-                                </Link>
+                                {!isAdmin && (
+                                    <>
+                                        <Link to="/menu" onClick={closeMenu} className="text-lg font-medium hover:text-primary">
+                                            Menu
+                                        </Link>
+                                        <Link to="/opinions" onClick={closeMenu} className="text-lg font-medium hover:text-primary">
+                                            Opinie
+                                        </Link>
+                                    </>
+                                )}
 
                                 {isClient && (
                                     <Link to="/reservations" onClick={closeMenu} className="text-lg font-medium text-primary">
                                         Zarezerwuj stolik
+                                    </Link>
+                                )}
+
+                                {isAdmin && (
+                                    <Link to="/admin" onClick={closeMenu} className="text-lg font-medium text-primary flex items-center gap-2">
+                                        <LayoutDashboard className="h-5 w-5" />
+                                        Panel Administratora
                                     </Link>
                                 )}
 

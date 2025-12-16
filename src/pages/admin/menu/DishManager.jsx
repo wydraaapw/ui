@@ -58,7 +58,7 @@ const DishManager = () => {
 
     const handleDelete = async (id, e) => {
         e.stopPropagation();
-        if (!window.confirm("Czy na pewno chcesz usunąć to danie?")) return;
+        if (!globalThis.confirm("Czy na pewno chcesz usunąć to danie?")) return;
 
         try {
             await adminMenuService.deleteDish(id);
