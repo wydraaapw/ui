@@ -11,5 +11,10 @@ export const reservationService = {
     createReservation: async (data) => {
 
         await axiosClient.post("/api/reservations", data);
+    },
+
+    getMyReservations: async () => {
+        const res = await axiosClient.get("/api/reservations/my");
+        return res.data;
     }
 };

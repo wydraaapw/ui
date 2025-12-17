@@ -186,6 +186,13 @@ const ReservationPage = () => {
         }
     };
 
+    const tableTypeNames= {
+        WC: "Łazienka",
+        BAR: "Bar",
+        ENTRANCE: "Wejście",
+        KITCHEN: "Kuchnia"
+    };
+
     const renderGridItem = (r, c) => {
         const item = tables.find(t => t.rowPosition === r && t.columnPosition === c);
 
@@ -203,7 +210,7 @@ const ReservationPage = () => {
                     {item.tableType === 'BAR' && <Martini className="h-6 w-6"/>}
                     {item.tableType === 'ENTRANCE' && <DoorOpen className="h-6 w-6"/>}
                     {item.tableType === 'KITCHEN' && <Utensils className="h-6 w-6"/>}
-                    <span className="text-[10px] font-bold mt-1">{item.tableType}</span>
+                    <span className="text-[10px] font-bold mt-1">{tableTypeNames[item.tableType] || item.tableType}</span>
                 </div>
             );
         }
