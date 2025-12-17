@@ -13,6 +13,7 @@ import AdminMenuPage from "@/pages/admin/menu/AdminMenuPage.jsx";
 import AdminWaitersPage from "@/pages/admin/waiter/AdminWaitersPage.jsx";
 import TableManager from "@/pages/admin/tables/TableManager.jsx";
 import ReservationPage from "@/pages/client/ReservationPage.jsx";
+import AdminReservationsPage from "@/pages/admin/reservations/AdminReservationPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -80,6 +81,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
                         <TableManager />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "admin/reservations",
+                element: (
+                    <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+                        <AdminReservationsPage />
                     </ProtectedRoute>
                 )
             },
