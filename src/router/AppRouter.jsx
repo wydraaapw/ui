@@ -1,10 +1,9 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
-import HomePage from "@/pages/auth/HomePage.jsx";
+import HomePage from "@/pages/HomePage.jsx";
 import LoginPage from "@/pages/auth/LoginPage.jsx";
 import RegisterPage from "@/pages/auth/RegisterPage.jsx";
 import ActivationPage from "@/pages/auth/ActivationPage.jsx";
-import ClientPage from "@/pages/client/ClientPage.jsx";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "@/pages/auth/ResetPasswordPage.jsx";
 import ProtectedRoute from "@/router/ProtectedRoute";
@@ -14,6 +13,7 @@ import AdminWaitersPage from "@/pages/admin/waiter/AdminWaitersPage.jsx";
 import TableManager from "@/pages/admin/tables/TableManager.jsx";
 import ReservationPage from "@/pages/client/ReservationPage.jsx";
 import AdminReservationsPage from "@/pages/admin/reservations/AdminReservationPage.jsx";
+import MyReservationsPage from "@/pages/client/MyReservationsPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -36,14 +36,6 @@ const router = createBrowserRouter([
             },
             { path: "opinions", element: <div className="p-10 text-center">Opinie wkrótce...</div> },
 
-            {
-                path: "dashboard",
-                element: (
-                    <ProtectedRoute allowedRoles={['ROLE_CLIENT']}>
-                        <ClientPage />
-                    </ProtectedRoute>
-                )
-            },
             {
                 path: "reservations",
                 element: (
@@ -92,6 +84,14 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 )
             },
+            {
+                path: "my-reservations",
+                element: (
+                    <ProtectedRoute allowedRoles={['ROLE_CLIENT']}>
+                        <MyReservationsPage />
+                    </ProtectedRoute>
+                )
+            }
 
         ]
     },

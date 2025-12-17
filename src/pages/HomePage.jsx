@@ -13,7 +13,7 @@ const HomePage = () => {
             </h1>
 
             <p className="text-lg text-slate-600 max-w-2xl mb-10">
-                Odkryj nasze wyjątkowe burgery, przygotowywane z pasją ze świeżych, lokalnych składników.
+                Odkryj nasze wyjątkowe jedzenie, przygotowywane z pasją ze świeżych, lokalnych składników.
                 Zamów online i odbierz w lokalu przy ul. Smacznej 15.
             </p>
 
@@ -33,25 +33,6 @@ const HomePage = () => {
                     </Button>
                 )}
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-5xl text-left">
-                <div className="bg-white p-6 rounded-xl shadow-sm border">
-                    <div className="text-4xl mb-4">🍔</div>
-                    <h3 className="font-bold text-xl mb-2">Świeże mięso</h3>
-                    <p className="text-slate-500">Codziennie mielona wołowina od lokalnych dostawców.</p>
-                </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border">
-                    <div className="text-4xl mb-4">🥗</div>
-                    <h3 className="font-bold text-xl mb-2">Chrupiące warzywa</h3>
-                    <p className="text-slate-500">Zawsze świeże dodatki, które nadają charakteru.</p>
-                </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border">
-                    <div className="text-4xl mb-4">🚀</div>
-                    <h3 className="font-bold text-xl mb-2">Szybka dostawa</h3>
-                    <p className="text-slate-500">Ciepłe jedzenie u Ciebie w mniej niż 45 minut.</p>
-                </div>
-            </div>
-
         </div>
     );
 };
