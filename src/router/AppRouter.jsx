@@ -14,6 +14,7 @@ import TableManager from "@/pages/admin/tables/TableManager.jsx";
 import ReservationPage from "@/pages/client/ReservationPage.jsx";
 import AdminReservationsPage from "@/pages/admin/reservations/AdminReservationPage.jsx";
 import MyReservationsPage from "@/pages/client/MyReservationsPage.jsx";
+import MenuPage from "@/pages/MenuPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -91,7 +92,11 @@ const router = createBrowserRouter([
                         <MyReservationsPage />
                     </ProtectedRoute>
                 )
-            }
+            },
+            {
+                path: "menu",
+                element: <MenuPage />
+            },
 
         ]
     },
