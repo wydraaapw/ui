@@ -15,6 +15,7 @@ import ReservationPage from "@/pages/client/ReservationPage.jsx";
 import AdminReservationsPage from "@/pages/admin/reservations/AdminReservationPage.jsx";
 import MyReservationsPage from "@/pages/client/MyReservationsPage.jsx";
 import MenuPage from "@/pages/MenuPage.jsx";
+import AccountPage from "@/pages/account/AccountPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -97,6 +98,14 @@ const router = createBrowserRouter([
                 path: "menu",
                 element: <MenuPage />
             },
+            {
+                path: "account",
+                element: (
+                    <ProtectedRoute>
+                        <AccountPage />
+                    </ProtectedRoute>
+                )
+            }
 
         ]
     },
