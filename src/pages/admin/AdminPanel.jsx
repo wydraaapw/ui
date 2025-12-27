@@ -2,7 +2,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Utensils, Users, LayoutGrid, CalendarClock} from "lucide-react";
+import { Utensils, Users, LayoutGrid, CalendarClock, MessageSquareQuote} from "lucide-react";
 
 export default function AdminPanel() {
     const { user } = useAuth();
@@ -74,6 +74,21 @@ export default function AdminPanel() {
                         </p>
                         <Button asChild className="w-full">
                             <Link to="/admin/reservations">Zarządzaj Rezerwacjami</Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+
+                <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-lg font-medium">Opinie i Oceny</CardTitle>
+                        <MessageSquareQuote className="h-5 w-5 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground mb-4">
+                            Przeglądaj opinie klientów i usuwaj nieodpowiednie treści.
+                        </p>
+                        <Button asChild className="w-full">
+                            <Link to="/admin/opinions">Moderuj Opinie</Link>
                         </Button>
                     </CardContent>
                 </Card>

@@ -16,6 +16,7 @@ import AdminReservationsPage from "@/pages/admin/reservations/AdminReservationPa
 import MyReservationsPage from "@/pages/client/MyReservationsPage.jsx";
 import MenuPage from "@/pages/MenuPage.jsx";
 import AccountPage from "@/pages/account/AccountPage.jsx";
+import AdminOpinionsPage from "@/pages/admin/AdminOpinionsPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -103,6 +104,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <AccountPage />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "admin/opinions",
+                element: (
+                    <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+                        <AdminOpinionsPage />
                     </ProtectedRoute>
                 )
             }
