@@ -17,6 +17,7 @@ import MyReservationsPage from "@/pages/client/MyReservationsPage.jsx";
 import MenuPage from "@/pages/MenuPage.jsx";
 import AccountPage from "@/pages/account/AccountPage.jsx";
 import AdminOpinionsPage from "@/pages/admin/AdminOpinionsPage.jsx";
+import OpinionsPage from "@/pages/OpinionsPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -37,8 +38,6 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 )
             },
-            { path: "opinions", element: <div className="p-10 text-center">Opinie wkrótce...</div> },
-
             {
                 path: "reservations",
                 element: (
@@ -114,6 +113,10 @@ const router = createBrowserRouter([
                         <AdminOpinionsPage />
                     </ProtectedRoute>
                 )
+            },
+            {
+                path: "opinions",
+                element: <OpinionsPage />
             }
 
         ]
