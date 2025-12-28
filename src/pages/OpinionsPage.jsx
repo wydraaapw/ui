@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button.jsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
 import { Star, User, MessageSquare, Loader2, Send, ChevronDown } from "lucide-react";
 import { toast } from "react-toastify";
-import PropTypes from "prop-types";
+import { StarRating } from "@/components/ui/StarRating";
 
 const OpinionsPage = () => {
     const { user } = useAuth();
@@ -174,7 +174,7 @@ const OpinionsPage = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    <RenderStars count={op.rating} />
+                                    <StarRating rating={op.rating}/>
                                 </div>
                             </CardHeader>
                             <CardContent>
@@ -200,21 +200,6 @@ const OpinionsPage = () => {
             )}
         </div>
     );
-};
-
-const RenderStars = ({ count }) => (
-    <div className="flex text-yellow-400">
-        {Array.from({ length: 5 }).map((_, i) => (
-            <Star
-                key={i}
-                className={`h-4 w-4 ${i < count ? "fill-current" : "text-gray-300"}`}
-            />
-        ))}
-    </div>
-);
-
-RenderStars.propTypes = {
-    count: PropTypes.number.isRequired,
 };
 
 export default OpinionsPage;

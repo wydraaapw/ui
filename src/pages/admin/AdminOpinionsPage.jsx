@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, Trash2, Star, MessageSquareQuote, Loader2, User } from "lucide-react";
 import { toast } from "react-toastify";
+import { StarRating } from "@/components/ui/StarRating";
 
 const AdminOpinionsPage = () => {
     const [opinions, setOpinions] = useState([]);
@@ -41,17 +42,6 @@ const AdminOpinionsPage = () => {
             toast.error("Nie udało się usunąć opinii.");
         }
     };
-
-    const renderStars = (rating) => (
-        <div className="flex text-yellow-400">
-            {Array.from({ length: 5 }, (_, i) => (
-                <Star
-                    key={i}
-                    className={`h-4 w-4 ${i < rating ? "fill-current" : "text-gray-300"}`}
-                />
-            ))}
-        </div>
-    );
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString("pl-PL", {
@@ -105,7 +95,7 @@ const AdminOpinionsPage = () => {
                                             </div>
 
                                             <div className="flex items-center gap-4">
-                                                {renderStars(opinion.rating)}
+                                                <StarRating rating={opinion.rating}/>
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
