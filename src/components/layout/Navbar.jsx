@@ -65,7 +65,9 @@ const Navbar = () => {
                     {!isAdmin && (
                         <>
                             <Link to="/menu" className="hover:text-primary transition">Menu</Link>
-                            <Link to="/opinions" className="hover:text-primary transition">Opinie</Link>
+                            <Link to="/opinions" className="text-gray-600 hover:text-primary transition-colors">
+                                Opinie
+                            </Link>
                         </>
                     )}
 
