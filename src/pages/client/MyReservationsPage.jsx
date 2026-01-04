@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { reservationService } from "@/api/reservationService.js";
-import { Card, CardContent, CardHeader} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
     Loader2, CalendarDays, Clock, MapPin, CheckCircle2,
-    Utensils, ChefHat, Filter, ChevronDown
+    Utensils, ChefHat, Filter, ChevronDown, XCircle
 } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -14,22 +14,36 @@ const MyReservationsPage = () => {
     const [reservations, setReservations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState("ALL");
-
     const [expandedIds, setExpandedIds] = useState([]);
 
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const data = await reservationService.getMyReservations();
-                setReservations(data);
-            } catch {
-                toast.error("Nie udało się pobrać Twoich rezerwacji.");
-            } finally {
-                setLoading(false);
-            }
-        };
-        void loadData();
+    const fetchReservations = useCallback(async () => {
+        try {
+            const data = await reservationService.getMyReservations();
+            setReservations(data);
+        } catch {
+            toast.error("Nie udało się pobrać Twoich rezerwacji.");
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        void fetchReservations();
+    }, [fetchReservations]);
+
+
+    const handleCancelReservation = async (id) => {
+        if (!confirm("Czy na pewno chcesz anulować tę rezerwację? Operacji nie można cofnąć.")) return;
+
+        try {
+            await reservationService.cancelReservation(id);
+            toast.success("Rezerwacja została anulowana.");
+            void fetchReservations();
+        } catch (error) {
+            const msg = error.response?.data?.detail || "Nie udało się anulować rezerwacji.";
+            toast.error(msg);
+        }
+    };
 
     const filteredReservations = statusFilter === "ALL"
         ? reservations
@@ -108,6 +122,8 @@ const MyReservationsPage = () => {
                     {filteredReservations.map((res) => {
                         const isExpanded = expandedIds.includes(res.id);
 
+                        const canCancel = res.status === 'PENDING' || res.status === 'CONFIRMED';
+
                         return (
                             <Card
                                 key={res.id}
@@ -185,20 +201,34 @@ const MyReservationsPage = () => {
                                                 </div>
                                             )}
 
-                                            <div className="pt-4 border-t flex justify-between items-center text-sm mt-4">
-                                                <div className="text-gray-500">
-                                                    Zakończenie wizyty: <span className="font-medium text-gray-900">{formatTime(res.end)}</span>
+                                            <div className="pt-4 border-t flex flex-col md:flex-row justify-between items-start md:items-center text-sm mt-4 gap-4">
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="text-gray-500">
+                                                        Zakończenie wizyty: <span className="font-medium text-gray-900">{formatTime(res.end)}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-gray-500">Obsługa:</span>
+                                                        {res.waiterName === "Nie przypisano" ? (
+                                                            <span className="text-gray-400 italic">Oczekiwanie na przydział</span>
+                                                        ) : (
+                                                            <Badge variant="outline" className="font-medium text-primary border-primary/20 bg-primary/5">
+                                                                🤵 {res.waiterName}
+                                                            </Badge>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-gray-500">Obsługa:</span>
-                                                    {res.waiterName === "Nie przypisano" ? (
-                                                        <span className="text-gray-400 italic">Oczekiwanie na przydział</span>
-                                                    ) : (
-                                                        <Badge variant="outline" className="font-medium text-primary border-primary/20 bg-primary/5">
-                                                            🤵 {res.waiterName}
-                                                        </Badge>
-                                                    )}
-                                                </div>
+
+                                                {canCancel && (
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        className="w-full md:w-auto"
+                                                        onClick={() => handleCancelReservation(res.id)}
+                                                    >
+                                                        <XCircle className="h-4 w-4 mr-2" />
+                                                        Anuluj rezerwację
+                                                    </Button>
+                                                )}
                                             </div>
                                         </div>
                                     </CardContent>

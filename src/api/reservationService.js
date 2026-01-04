@@ -16,5 +16,9 @@ export const reservationService = {
     getMyReservations: async () => {
         const res = await axiosClient.get("/api/reservations/my");
         return res.data;
-    }
+    },
+
+    cancelReservation: async (id) => {
+        await axiosClient.patch(`/api/reservations/${id}/cancel`);
+    },
 };
