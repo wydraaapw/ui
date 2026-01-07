@@ -45,9 +45,9 @@ const MyReservationsPage = () => {
         }
     };
 
-    const filteredReservations = statusFilter === "ALL"
-        ? reservations
-        : reservations.filter(r => r.status === statusFilter);
+    const filteredReservations = reservations
+        .filter(r => statusFilter === "ALL" ? true : r.status === statusFilter)
+        .sort((a, b) => new Date(a.start) - new Date(b.start));
 
     const toggleExpand = (id) => {
         setExpandedIds(prev =>

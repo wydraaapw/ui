@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
     CalendarIcon,
     Clock,
@@ -50,6 +51,8 @@ const ReservationPage = () => {
     const [loadingGrid, setLoadingGrid] = useState(false);
 
     const [menuItems, setMenuItems] = useState([]);
+    const [categories, setCategories] = useState(["Wszystkie"]);
+    const [selectedCategory, setSelectedCategory] = useState("Wszystkie");
     const [loadingMenu, setLoadingMenu] = useState(false);
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm({
@@ -67,6 +70,12 @@ const ReservationPage = () => {
             try {
                 const data = await clientMenuService.getMenu();
                 setMenuItems(data);
+
+                const uniqueCategories = new Set(
+                    data.map(item => item.categoryName).filter(Boolean)
+                );
+
+                setCategories(["Wszystkie", ...Array.from(uniqueCategories).sort((a, b) => a.localeCompare(b))]);
             } catch {
                 toast.error("Nie udało się pobrać menu.");
             } finally {
@@ -76,6 +85,9 @@ const ReservationPage = () => {
         void fetchMenu();
     }, []);
 
+    const filteredMenuItems = selectedCategory === "Wszystkie"
+        ? menuItems
+        : menuItems.filter(item => item.categoryName === selectedCategory);
 
     const getAvailableHours = () => {
         const hours = [];
@@ -85,13 +97,13 @@ const ReservationPage = () => {
 
         const isToday = selectedDate === todayStr;
 
-        for (let h = 12; h <= 22; h++) {
+        for (let h = 12; h <= 19; h++) {
             if (isToday && h <= currentHour) {
                 continue;
             }
 
             hours.push({ value: `${h}:00`, label: `${h}:00` });
-            if (h !== 22) {
+            if (h !== 19) {
                 if (!isToday || h > currentHour) {
                     hours.push({ value: `${h}:30`, label: `${h}:30` });
                 }
@@ -191,6 +203,66 @@ const ReservationPage = () => {
         BAR: "Bar",
         ENTRANCE: "Wejście",
         KITCHEN: "Kuchnia"
+    };
+
+    const renderMenuItems = () => {
+        if (loadingMenu) {
+            return (
+                <div className="text-center py-10">Ładowanie menu...</div>
+            );
+        }
+
+        if (filteredMenuItems.length === 0) {
+            return (
+                <div className="text-center py-10 text-gray-500 border border-dashed rounded-lg">
+                    Brak dań w wybranej kategorii.
+                </div>
+            );
+        }
+
+        return (
+            <div className="space-y-4">
+                {filteredMenuItems.map(dish => (
+                    <Card key={dish.id} className="flex flex-row items-center p-4 gap-4">
+                        <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden shrink-0">
+                            <img src={dish.imageUrl} alt={dish.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1">
+                            <div className="flex justify-between items-start">
+                                <h3 className="font-bold">{dish.name}</h3>
+                                {dish.categoryName && (
+                                    <Badge variant="secondary" className="text-[10px] ml-2 shrink-0">
+                                        {dish.categoryName}
+                                    </Badge>
+                                )}
+                            </div>
+                            <p className="text-sm text-gray-500 line-clamp-1">{dish.description}</p>
+                            <div className="text-primary font-bold mt-1">{dish.price} zł</div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <Button
+                                size="icon"
+                                variant="outline"
+                                className="h-8 w-8 rounded-full"
+                                onClick={() => updateDishQuantity(dish.id, -1)}
+                                disabled={!reservationData.dishes[dish.id]}
+                            >
+                                <Minus className="h-4 w-4" />
+                            </Button>
+                            <span className="w-4 text-center font-bold">{reservationData.dishes[dish.id] || 0}</span>
+                            <Button
+                                size="icon"
+                                variant="outline"
+                                className="h-8 w-8 rounded-full"
+                                onClick={() => updateDishQuantity(dish.id, 1)}
+                            >
+                                <Plus className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </Card>
+                ))}
+            </div>
+        );
     };
 
     const renderGridItem = (r, c) => {
@@ -369,43 +441,24 @@ const ReservationPage = () => {
                         <h2 className="font-bold text-xl">Wybierz dania (Opcjonalnie)</h2>
                     </div>
 
-                    <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-                        {loadingMenu ? (
-                            <div className="text-center py-10">Ładowanie menu...</div>
-                        ) : (
-                            menuItems.map(dish => (
-                                <Card key={dish.id} className="flex flex-row items-center p-4 gap-4">
-                                    <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden shrink-0">
-                                        <img src={dish.imageUrl} alt={dish.name} className="w-full h-full object-cover" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="font-bold">{dish.name}</h3>
-                                        <p className="text-sm text-gray-500 line-clamp-1">{dish.description}</p>
-                                        <div className="text-primary font-bold mt-1">{dish.price} zł</div>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <Button
-                                            size="icon"
-                                            variant="outline"
-                                            className="h-8 w-8 rounded-full"
-                                            onClick={() => updateDishQuantity(dish.id, -1)}
-                                            disabled={!reservationData.dishes[dish.id]}
-                                        >
-                                            <Minus className="h-4 w-4" />
-                                        </Button>
-                                        <span className="w-4 text-center font-bold">{reservationData.dishes[dish.id] || 0}</span>
-                                        <Button
-                                            size="icon"
-                                            variant="outline"
-                                            className="h-8 w-8 rounded-full"
-                                            onClick={() => updateDishQuantity(dish.id, 1)}
-                                        >
-                                            <Plus className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </Card>
-                            ))
-                        )}
+                    {!loadingMenu && categories.length > 0 && (
+                        <div className="flex gap-2 overflow-x-auto pb-4 mb-2 scrollbar-thin scrollbar-thumb-gray-300">
+                            {categories.map((cat) => (
+                                <Button
+                                    key={cat}
+                                    variant={selectedCategory === cat ? "default" : "outline"}
+                                    size="sm"
+                                    onClick={() => setSelectedCategory(cat)}
+                                    className="whitespace-nowrap rounded-full px-4"
+                                >
+                                    {cat}
+                                </Button>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="max-h-[500px] overflow-y-auto pr-2">
+                        {renderMenuItems()}
                     </div>
 
                     <div className="flex justify-between mt-6 pt-4 border-t">

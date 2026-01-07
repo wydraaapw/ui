@@ -21,4 +21,15 @@ export const reservationService = {
     cancelReservation: async (id) => {
         await axiosClient.patch(`/api/reservations/${id}/cancel`);
     },
+
+    getWaiterReservations: async () => {
+        const response = await axiosClient.get("/api/reservations/waiter-my");
+        return response.data;
+    },
+
+    updateDishStatus: async (reservationId, dishId) => {
+        await axiosClient.patch(`/api/reservations/${reservationId}/dish/${dishId}/status`);
+    }
+
+
 };

@@ -15,9 +15,10 @@ import ReservationPage from "@/pages/client/ReservationPage.jsx";
 import AdminReservationsPage from "@/pages/admin/reservations/AdminReservationPage.jsx";
 import MyReservationsPage from "@/pages/client/MyReservationsPage.jsx";
 import MenuPage from "@/pages/MenuPage.jsx";
-import AccountPage from "@/pages/account/AccountPage.jsx";
+import AccountPage from "@/pages/AccountPage.jsx";
 import AdminOpinionsPage from "@/pages/admin/AdminOpinionsPage.jsx";
 import OpinionsPage from "@/pages/OpinionsPage.jsx";
+import WaiterReservationsPage from "@/pages/waiter/WaiterReservationsPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -117,6 +118,14 @@ const router = createBrowserRouter([
             {
                 path: "opinions",
                 element: <OpinionsPage />
+            },
+            {
+                path: "waiter/reservations",
+                element: (
+                    <ProtectedRoute allowedRoles={['ROLE_WAITER']}>
+                        <WaiterReservationsPage />
+                    </ProtectedRoute>
+                )
             }
 
         ]

@@ -43,14 +43,15 @@ const Navbar = () => {
 
     const rolePaths = {
         ROLE_ADMIN: "/admin",
-        ROLE_WAITER: "/waiter",
-        ROLE_CLIENT: "/client",
+        ROLE_WAITER: "/waiter/reservations",
+        ROLE_CLIENT: "/",
     };
 
     const logoPath = rolePaths[user?.role] ?? "/";
 
     const isClient = user?.role === 'ROLE_CLIENT';
     const isAdmin = user?.role === 'ROLE_ADMIN';
+    const isWaiter = user?.role === 'ROLE_WAITER';
 
     return (
         <nav className="border-b bg-white shadow-sm sticky top-0 z-50">
@@ -97,7 +98,7 @@ const Navbar = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56">
                                 <DropdownMenuLabel>
-                                    Moje Konto ({user.role === 'ROLE_CLIENT' ? 'Klient' : user.role === 'ROLE_ADMIN' ? 'Admin' : 'Personel'})
+                                    Moje Konto ({isClient ? 'Klient' : isAdmin ? 'Admin' : 'Personel'})
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
 
@@ -117,6 +118,12 @@ const Navbar = () => {
                                             </Link>
                                         </DropdownMenuItem>
                                     </>
+                                )}
+
+                                {isWaiter && (
+                                    <DropdownMenuItem onClick={() => navigate("/waiter/reservations")}>
+                                        <UtensilsCrossed className="mr-2 h-4 w-4" /> Moje stoliki
+                                    </DropdownMenuItem>
                                 )}
 
                                 {isAdmin && (
