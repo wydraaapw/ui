@@ -22,11 +22,11 @@ import {
     Menu,
     User,
     CalendarDays,
-    Bell,
     LogOut,
     ChevronDown,
     LayoutDashboard
 } from "lucide-react";
+import NotificationBell from "@/components/layout/NotificationBell.jsx";
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -88,67 +88,61 @@ const Navbar = () => {
 
                 <div className="hidden md:flex items-center gap-4">
                     {user ? (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="flex items-center gap-2">
-                                    <User className="h-4 w-4" />
-                                    <span>{user.firstName}</span>
-                                    <ChevronDown className="h-4 w-4 opacity-50" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuLabel>
-                                    Moje Konto ({isClient ? 'Klient' : isAdmin ? 'Admin' : 'Personel'})
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
+                        <>
+                            <NotificationBell />
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" className="flex items-center gap-2">
+                                        <User className="h-4 w-4" />
+                                        <span>{user.firstName}</span>
+                                        <ChevronDown className="h-4 w-4 opacity-50" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-56">
+                                    <DropdownMenuLabel>
+                                        Moje Konto ({isClient ? 'Klient' : isAdmin ? 'Admin' : 'Personel'})
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
 
-                                {isClient && (
-                                    <>
+                                    {isClient && (
                                         <DropdownMenuItem asChild>
                                             <Link to="/my-reservations" className="cursor-pointer">
-                                                <CalendarDays className="mr-2 h-4 w-4" />
+                                                <CalendarDays className="mr-2 h-4 w-4"/>
                                                 <span>Moje Rezerwacje</span>
                                             </Link>
                                         </DropdownMenuItem>
+                                    )}
 
+                                    {isWaiter && (
+                                        <DropdownMenuItem onClick={() => navigate("/waiter/reservations")}>
+                                            <UtensilsCrossed className="mr-2 h-4 w-4" /> Moje stoliki
+                                        </DropdownMenuItem>
+                                    )}
+
+                                    {isAdmin && (
                                         <DropdownMenuItem asChild>
-                                            <Link to="/notifications" className="cursor-pointer">
-                                                <Bell className="mr-2 h-4 w-4" />
-                                                <span>Powiadomienia</span>
+                                            <Link to="/admin" className="cursor-pointer">
+                                                <LayoutDashboard className="mr-2 h-4 w-4" />
+                                                <span>Panel Administratora</span>
                                             </Link>
                                         </DropdownMenuItem>
-                                    </>
-                                )}
+                                    )}
 
-                                {isWaiter && (
-                                    <DropdownMenuItem onClick={() => navigate("/waiter/reservations")}>
-                                        <UtensilsCrossed className="mr-2 h-4 w-4" /> Moje stoliki
-                                    </DropdownMenuItem>
-                                )}
-
-                                {isAdmin && (
                                     <DropdownMenuItem asChild>
-                                        <Link to="/admin" className="cursor-pointer">
-                                            <LayoutDashboard className="mr-2 h-4 w-4" />
-                                            <span>Panel Administratora</span>
+                                        <Link to="/account" className="cursor-pointer">
+                                            <User className="mr-2 h-4 w-4" />
+                                            <span>Informacje o koncie</span>
                                         </Link>
                                     </DropdownMenuItem>
-                                )}
 
-                                <DropdownMenuItem asChild>
-                                    <Link to="/account" className="cursor-pointer">
-                                        <User className="mr-2 h-4 w-4" />
-                                        <span>Informacje o koncie</span>
-                                    </Link>
-                                </DropdownMenuItem>
-
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer focus:text-red-600">
-                                    <LogOut className="mr-2 h-4 w-4" />
-                                    <span>Wyloguj się</span>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer focus:text-red-600">
+                                        <LogOut className="mr-2 h-4 w-4" />
+                                        <span>Wyloguj się</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </>
                     ) : (
                         <>
                             <Button variant="ghost" asChild>
@@ -161,7 +155,10 @@ const Navbar = () => {
                     )}
                 </div>
 
-                <div className="md:hidden">
+                <div className="md:hidden flex items-center gap-2">
+
+                    {user && <NotificationBell />}
+
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -209,17 +206,10 @@ const Navbar = () => {
                                         </p>
 
                                         {isClient && (
-                                            <>
                                                 <Link to="/my-reservations" onClick={closeMenu} className="flex items-center gap-3 text-lg hover:text-primary">
                                                     <CalendarDays className="h-5 w-5" />
                                                     Moje Rezerwacje
                                                 </Link>
-
-                                                <Link to="/notifications" onClick={closeMenu} className="flex items-center gap-3 text-lg hover:text-primary">
-                                                    <Bell className="h-5 w-5" />
-                                                    Powiadomienia
-                                                </Link>
-                                            </>
                                         )}
 
                                         <Link to="/account" onClick={closeMenu} className="flex items-center gap-3 text-lg hover:text-primary">
