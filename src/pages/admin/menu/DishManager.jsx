@@ -185,7 +185,7 @@ const DishManager = () => {
                                                 <p className="text-xs text-gray-600 mt-1 line-clamp-3">{dish.description}</p>
 
                                                 {dish.ingredients && dish.ingredients.length > 0 && (
-                                                    <p className="text-[10px] text-gray-400 mt-1 truncate">
+                                                    <p className="text-[10px] text-gray-400 mt-1 wrap-break-word">
                                                         {dish.ingredients.join(', ')}
                                                     </p>
                                                 )}
