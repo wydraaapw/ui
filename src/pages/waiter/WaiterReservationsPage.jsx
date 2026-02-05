@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { toast } from "react-toastify";
 
-// --- Funkcja pomocnicza: Aktualizacja stanu lokalnego ---
 const toggleDishInList = (reservationsList, reservationId, dishId) => {
     return reservationsList.map(res => {
         if (res.id !== reservationId) return res;
@@ -25,7 +24,6 @@ const toggleDishInList = (reservationsList, reservationId, dishId) => {
     });
 };
 
-// --- KOMPONENT 1: Pojedyncze Danie ---
 const ReservationDishItem = ({ dish, canEdit, onToggle, isProcessing }) => {
     const renderStatusBadge = () => {
         if (isProcessing) {
@@ -87,7 +85,6 @@ ReservationDishItem.propTypes = {
     isProcessing: PropTypes.bool.isRequired,
 };
 
-// --- KOMPONENT 2: Karta Rezerwacji (TUTAJ ZMIANY) ---
 const ReservationCard = ({ reservation, isExpanded, onToggleExpand, onDishToggle, processingDishId }) => {
     const isConfirmed = reservation.status === 'CONFIRMED';
 
@@ -110,14 +107,15 @@ const ReservationCard = ({ reservation, isExpanded, onToggleExpand, onDishToggle
     };
 
     const formatTime = (isoString) => new Date(isoString).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+    const day = new Date(reservation.start).toLocaleDateString('pl-PL');
 
     return (
         <Card className={`overflow-hidden transition-all duration-200 border-l-4 ${isConfirmed ? 'border-l-primary shadow-sm' : 'border-l-slate-300 opacity-80'}`}>
             <CardHeader className="bg-white cursor-pointer hover:bg-slate-50 transition-colors p-4 sm:p-5" onClick={() => onToggleExpand(reservation.id)}>
                 <div className="flex justify-between items-center">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                        {day}
                         <div className="flex items-center gap-3">
-                            {/* ZMIANA: Wyświetlanie zakresu godzin */}
                             <div className="bg-primary/10 text-primary p-2 rounded-lg font-bold text-sm min-w-[90px] text-center whitespace-nowrap">
                                 {formatTime(reservation.start)} - {formatTime(reservation.end)}
                             </div>
@@ -127,7 +125,6 @@ const ReservationCard = ({ reservation, isExpanded, onToggleExpand, onDishToggle
                                     Stolik {reservation.tableNumber}
                                     {getStatusBadge(reservation.status)}
                                 </span>
-                                {/* ZMIANA: Poprawione wyświetlanie Imienia i Nazwiska (clientName z backendu) */}
                                 <span className="text-xs text-gray-500 flex items-center gap-1 mt-1">
                                     <User className="h-3 w-3" /> {reservation.clientName || "Klient"}
                                 </span>
@@ -135,7 +132,6 @@ const ReservationCard = ({ reservation, isExpanded, onToggleExpand, onDishToggle
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
-                        {/* ZMIANA: Usunięto ID rezerwacji */}
                         <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
                             <ChevronDown className={`h-5 w-5 text-gray-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
                         </Button>
@@ -186,7 +182,6 @@ ReservationCard.propTypes = {
     processingDishId: PropTypes.number,
 };
 
-// --- KOMPONENT 3: Główna Strona ---
 const WaiterReservationsPage = () => {
     const [reservations, setReservations] = useState([]);
     const [loading, setLoading] = useState(true);
